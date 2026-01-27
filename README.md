@@ -1,143 +1,229 @@
-# NovaAI Nexus – Agentic Honeypot for Scam Detection
+# 🛡️ NovaAI Nexus — Agentic Honeypot for Scam Detection & Intelligence Extraction
 
-An AI-powered **Agentic Honeypot API** built for the **India AI Impact Buildathon 2026 (GUVI × HCL)** to detect scam messages and autonomously extract scam intelligence.
-
-This system detects scam intent, engages scammers using a human-like AI agent, and extracts actionable intelligence such as UPI IDs, bank accounts, and phishing links.
+NovaAI Nexus is an **Agentic AI Honeypot API** designed for the **India AI Impact Buildathon 2026**, focused on detecting scam messages, autonomously engaging scammers, and extracting actionable intelligence such as UPI IDs, bank accounts, and phishing links — all while following ethical and responsible AI practices.
 
 ---
 
-## 🚀 Features
+## 🚀 Problem Statement
 
-- Scam message detection  
-- Autonomous AI agent engagement  
-- Multi-turn conversation support  
-- Intelligence extraction:
-  - UPI IDs  
-  - Bank accounts  
-  - Phishing links  
-- Secured with `x-api-key`  
-- Structured JSON responses  
-- Mandatory GUVI callback supported  
-- Production-ready FastAPI service  
+### **Agentic Honey-Pot for Scam Detection & Intelligence Extraction**
+
+Design an autonomous AI honeypot system that:
+- Detects scam messages
+- Engages scammers using a believable persona
+- Extracts intelligence (UPI IDs, bank accounts, phishing links)
+- Returns structured JSON responses
+- Ensures ethical AI behavior
 
 ---
 
-## 🧩 Tech Stack
+## ✨ Features
 
-- Python 3.9+
-- FastAPI
-- Uvicorn
-- Pydantic
+- 🔐 API Key-based Authentication
+- 🧠 Scam Detection using Financial Intent + Urgency Logic
+- 🤖 Autonomous Agentic Engagement
+- 🔍 Intelligence Extraction (UPI, Bank, URLs)
+- 📊 Engagement Metrics
+- 🔄 GUVI Callback Integration
+- 📜 Ethical & Responsible AI Compliance
+- ⚡ FastAPI + Modular Architecture
 
 ---
 
 ## 📂 Project Structure
 
+```
 novaai-nexus-honeypot/
-│
-├── app.py # Main API
-├── detector.py # Scam detection logic
-├── agent.py # AI agent responses
-├── extractor.py # Intelligence extraction
-├── callback.py # GUVI callback sender
-├── security.py # API key validation
-├── sessions.py # Session management
-├── models.py # Request/response schemas
-├── config.py # Configuration
-├── requirements.txt
-└── README.md
-
+├── app.py              # Main FastAPI app
+├── detector.py         # Scam detection logic
+├── agent.py            # Autonomous agent responses
+├── extractor.py        # Intelligence extraction
+├── callback.py         # GUVI callback handler
+├── security.py         # API key authentication
+├── sessions.py         # Session management
+├── models.py           # Request & Response schemas
+├── config.py           # Configuration file
+├── requirements.txt    # Python dependencies
+└── README.md           # Documentation
+```
 
 ---
 
-## 🔐 API Security
+## ⚙️ Setup Instructions
 
-All requests must include:
+### 1️⃣ Create Virtual Environment
 
+```bash
+python -m venv venv
+```
+
+### 2️⃣ Activate Environment
+
+**Windows**
+```bash
+venv\Scripts\activate
+```
+
+**Mac/Linux**
+```bash
+source venv/bin/activate
+```
+
+### 3️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4️⃣ Run Server
+
+```bash
+uvicorn app:app --reload
+```
+
+---
+
+## 🌐 API Access
+
+Open Swagger UI:
+```
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## 🔐 API Authentication
+
+All requests require:
+
+```
 x-api-key: YOUR_SECRET_API_KEY
+```
 
-Requests without a valid API key are rejected.
+Configured inside `security.py`.
 
 ---
 
-## 📥 API Endpoint
+## 📡 Honeypot Endpoint
 
 ### POST `/honeypot`
 
-Accepts scam message events and returns analysis.
-
-### Example Request
+#### Sample Request
 
 ```json
 {
-  "sessionId": "test-001",
+  "sessionId": "nova-test-001",
   "message": {
     "sender": "scammer",
-    "text": "Your account is blocked. Verify now.",
-    "timestamp": "2026-01-21T10:15:30Z"
+    "text": "Send payment to fraudster@upi immediately.",
+    "timestamp": "2026-01-21T10:15:00Z"
   },
   "conversationHistory": [],
   "metadata": {
     "channel": "SMS",
     "language": "English",
     "locale": "IN"
-  
-Example Response
+  }
+}
+```
 
+#### Sample Response
+
+```json
 {
   "status": "success",
   "scamDetected": true,
   "engagementMetrics": {
     "engagementDurationSeconds": 120,
-    "totalMessagesExchanged": 3
+    "totalMessagesExchanged": 2
   },
   "extractedIntelligence": {
     "bankAccounts": [],
-    "upiIds": ["fraud@upi"],
+    "upiIds": ["fraudster@upi"],
     "phishingLinks": []
   },
-  "agentNotes": "Scam intent confirmed through urgency and payment redirection language. Agent engaged safely and extracted UPI information without exposing detection."
+  "agentNotes": "Scam intent confirmed. Agent engaged safely and extracted UPI information."
 }
+```
 
-⚙️ Setup Instructions
-1️⃣ Create virtual environment
+---
 
-python -m venv venv
-venv\Scripts\activate
+## 🔁 GUVI Callback Integration
 
-2️⃣ Install dependencies
+Once scam engagement reaches threshold:
 
-pip install -r requirements.txt
+```http
+POST https://hackathon.guvi.in/api/updateHoneypotFinalResult
+```
 
-3️⃣ Run the server
+Payload includes:
+- sessionId
+- scamDetected
+- extractedIntelligence
+- engagement metrics
+- agent notes
 
-uvicorn app:app --reload
+---
 
-Open Swagger UI:
+## 🧠 Scam Detection Logic
 
-http://127.0.0.1:8000/docs
+Triggers scam when:
+- Financial intent present
+- Urgency or threat language used
+- Redirection to payment or links
 
-📤 GUVI Final Callback
+---
 
-Once scam engagement completes, the system sends extracted intelligence to:
+## 🤖 Agent Behavior
 
-POST https://hackathon.guvi.in/api/updateHoneyPotFinalResult
-This is mandatory for evaluation.
+The agent:
+- Does NOT reveal detection
+- Maintains neutral & believable tone
+- Asks clarifying questions
+- Extracts intelligence safely
 
-🏆 Hackathon Alignment
+---
+
+## 🛡 Ethical AI Compliance
+
+NovaAI Nexus follows:
+- No entrapment
+- No manipulation
+- No victim shaming
+- Transparent security design
+- Responsible data handling
+
+---
+
+## 🏆 Hackathon Alignment
 
 This project is built according to:
 
-India AI Impact Buildathon
+- **India AI Impact Buildathon 2026**
+- Problem Statement 2: *Agentic Honey-Pot for Scam Detection & Intelligence Extraction*
+- Ethical AI Guidelines
+- GUVI API Integration Rules
 
-Problem Statement 2: Agentic Honey-Pot for Scam Detection & Intelligence Extraction
+---
 
-GUVI document reference
+## 📌 Deployment Readiness
 
-Ethical AI guidelines
+✔ Public HTTPS ready  
+✔ API secured  
+✔ Stateless scalable design  
+✔ Always-on compatible  
+✔ Free-tier cloud deployable  
 
-👨‍💻 Team
+---
 
-Team Name: NovaAI Nexus
-Event: India AI Impact Buildathon 2026
-Organized by: HCL × GUVI
+## 👥 Team
+
+**Team Name:** NovaAI Nexus  
+**Event:** India AI Impact Buildathon 2026  
+**Organized by:** HCL x GUVI  
+
+---
+
+## 📄 License
+
+This project is for hackathon and educational purposes only.
