@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 class Message(BaseModel):
     sender: str
@@ -10,7 +10,7 @@ class RequestModel(BaseModel):
     sessionId: str
     message: Message
     conversationHistory: List[Message] = []
-    metadata: Optional[dict] = {}
+    metadata: Optional[Dict] = {}
 
 class EngagementMetrics(BaseModel):
     engagementDurationSeconds: int

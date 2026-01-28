@@ -1,14 +1,17 @@
 def agent_reply(scam_detected: bool, extracted: dict) -> str:
     if not scam_detected:
-        return "Alright, let me know if there’s anything you’d like me to check."
-
-    # Scam detected but no intelligence extracted yet
-    if not any(extracted.values()):
         return (
-            "I’m not fully clear on this yet. Could you explain how I’m supposed to proceed?"
+            "Alright, thanks for letting me know. "
+            "Feel free to share more details if needed."
         )
 
-    # Some intelligence already extracted
+    if not any(extracted.values()):
+        return (
+            "I want to make sure I understand this correctly. "
+            "Could you explain what I’m expected to do next?"
+        )
+
     return (
-        "Got it, I’ll look into this. Is there anything else I should be aware of?"
+        "Got it, I’ll look into this. "
+        "Let me know if there’s anything else I should be aware of."
     )

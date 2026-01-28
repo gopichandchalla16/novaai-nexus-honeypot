@@ -10,5 +10,5 @@ def send_callback(payload: dict):
             timeout=5
         )
     except Exception:
-        # Never crash API if callback fails
+        # Must NEVER crash the API
         pass
