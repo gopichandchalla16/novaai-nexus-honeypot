@@ -198,9 +198,13 @@ Callback failures never interrupt the main API.
 ## 🛡 Responsible AI Compliance
 
 ✔ No impersonation
+
 ✔ No entrapment
+
 ✔ No hallucinated data
+
 ✔ No exposure of detection logic
+
 ✔ Deterministic & explainable outputs
 
 ---
