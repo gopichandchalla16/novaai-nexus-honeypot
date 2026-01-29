@@ -40,6 +40,7 @@ Design an autonomous AI honeypot system that:
 
 ## 📂 Project Structure
 
+```
 
 novaai-nexus-honeypot/
 ├── app.py              # Main FastAPI application
@@ -54,17 +55,25 @@ novaai-nexus-honeypot/
 ├── requirements.txt    # Dependencies
 └── README.md           # Documentation
 
+```
+
 ---
 
 ## 🌐 Live Deployment
 
 **Public API Endpoint**
+```
 
-https://novaai-nexus-honeypot.onrender.com/honeypot
+[https://novaai-nexus-honeypot.onrender.com/honeypot](https://novaai-nexus-honeypot.onrender.com/honeypot)
+
+```
 
 **Swagger Documentation**
+```
 
-https://novaai-nexus-honeypot.onrender.com/docs
+[https://novaai-nexus-honeypot.onrender.com/docs](https://novaai-nexus-honeypot.onrender.com/docs)
+
+```
 
 ---
 
@@ -72,9 +81,11 @@ https://novaai-nexus-honeypot.onrender.com/docs
 
 All requests must include the API key:
 
+```
 
 x-api-key: <YOUR_API_KEY>
 
+````
 
 The key is securely validated on every request.
 
@@ -101,9 +112,13 @@ The key is securely validated on every request.
     "locale": "IN"
   }
 }
+````
 
-✅ JSON Response Schema
+---
 
+## ✅ JSON Response Schema
+
+```json
 {
   "status": "success",
   "scamDetected": true,
@@ -128,80 +143,100 @@ The key is securely validated on every request.
     "systemRationale": "Designed to safely engage scammers while gathering evidence without exposing detection."
   }
 }
+```
 
 ---
 
-## Scam Detection Logic
+## 🧠 Scam Detection Logic
 
-A message is classified as a scam if:
-- Urgency language and financial intent are detected, or
-- A phishing link is present
+A message is classified as a scam when:
 
-This approach prioritizes explainability and low false positives.
+* **Urgency language AND financial intent** are detected
+  **OR**
+* A **phishing link** is present
+
+This approach ensures:
+
+* Low false positives
+* High explainability
+* Ethical detection behavior
 
 ---
 
-## Agentic Engagement Behavior
+## 🤖 Agentic Engagement Behavior
 
 The autonomous agent:
-- Does not reveal detection
-- Does not confront or accuse
-- Does not request sensitive information
-- Uses neutral and believable language
-- Safely prolongs engagement to extract intelligence
+
+* Never reveals scam detection
+* Never confronts or accuses
+* Never requests sensitive information
+* Uses neutral, believable language
+* Safely prolongs interaction to extract intelligence
 
 ---
 
-## GUVI Callback Integration
+## 🔁 GUVI Callback Integration
 
-When engagement reaches the defined threshold, a callback is sent to:
+When engagement reaches the defined threshold, the system sends a callback to:
 
-https://hackathon.guvi.in/api/updateHoneyPotFinalResult
+```
+POST https://hackathon.guvi.in/api/updateHoneyPotFinalResult
+```
 
-Callback data includes session ID, scam status, engagement metrics, extracted intelligence, and agent notes.
+Callback payload includes:
 
-Callback failures do not interrupt the main API.
+* sessionId
+* scamDetected
+* totalMessagesExchanged
+* extractedIntelligence
+* agentNotes
 
----
-
-## Responsible AI Compliance
-
-- No impersonation
-- No entrapment
-- No hallucinated data
-- No exposure of detection logic
-- Deterministic and explainable outputs
+Callback failures never interrupt the main API.
 
 ---
 
-## Hackathon Alignment
+## 🛡 Responsible AI Compliance
 
-Event: India AI Impact Buildathon 2026  
-Organizer: HCL x GUVI  
-Problem Statement: Agentic Honeypot for Scam Detection  
-
-Designed for large-scale fraud prevention in India.
-
----
-
-## Deployment Readiness
-
-- Public HTTPS endpoint
-- Stable response schema
-- Secure authentication
-- Low latency
-- Always-on compatible
-- Evaluation-safe
+✔ No impersonation
+✔ No entrapment
+✔ No hallucinated data
+✔ No exposure of detection logic
+✔ Deterministic & explainable outputs
 
 ---
 
-## Team
+## 🏆 Hackathon Alignment
 
-Team Name: NovaAI Nexus  
-Event: India AI Impact Buildathon 2026
+* **India AI Impact Buildathon 2026**
+* Organized by **HCL x GUVI**
+* Problem Statement 2: Agentic Honeypot
+* Designed for large-scale fraud prevention in India
 
 ---
 
-## License
+## 🚀 Deployment Readiness
+
+✔ Public HTTPS endpoint
+
+✔ Stable response schema
+
+✔ Secure authentication
+
+✔ Low latency
+
+✔ Always-on compatible
+
+✔ Evaluation-safe
+
+---
+
+## 👥 Team
+
+**Team Name:** NovaAI Nexus
+**Event:** India AI Impact Buildathon 2026
+
+---
+
+## 📄 License
 
 This project is developed strictly for hackathon and educational purposes under the India AI Impact Buildathon 2026.
