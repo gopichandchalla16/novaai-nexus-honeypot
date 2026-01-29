@@ -1,17 +1,17 @@
-def agent_reply(scam_detected: bool, extracted: dict) -> str:
+def agent_reply(scam_detected: bool, confidence: str) -> str:
     if not scam_detected:
         return (
             "Alright, thanks for letting me know. "
             "Feel free to share more details if needed."
         )
 
-    if not any(extracted.values()):
+    if confidence == "high":
         return (
-            "I want to make sure I understand this correctly. "
-            "Could you explain what I’m expected to do next?"
+            "Okay, I’ll take a look at this. "
+            "Let me know if there’s anything else I should be aware of."
         )
 
     return (
-        "Got it, I’ll look into this. "
-        "Let me know if there’s anything else I should be aware of."
+        "I want to make sure I understand this correctly. "
+        "Could you explain what I’m expected to do next?"
     )

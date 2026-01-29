@@ -1,4 +1,5 @@
 import re
+from typing import Dict, List
 
 URGENCY_WORDS = [
     "urgent", "immediately", "now", "asap",
@@ -17,22 +18,45 @@ PHISHING_PATTERNS = [
     r"\.in"
 ]
 
-def detect_scam(text: str) -> bool:
-    """
-    Conservative scam detection:
-    - Financial intent + urgency
-    - OR phishing link presence
-    """
+
+def detect_scam(text: str) -> Dict:
     text_lower = text.lower()
+    signals: List[str] = []
 
-    urgency = any(word in text_lower for word in URGENCY_WORDS)
-    financial = any(word in text_lower for word in FINANCIAL_WORDS)
-    phishing = any(re.search(pat, text_lower) for pat in PHISHING_PATTERNS)
+    urgency = any(w in text_lower for w in URGENCY_WORDS)
+    financial = any(w in text_lower for w in FINANCIAL_WORDS)
+    phishing = any(re.search(p, text_lower) for p in PHISHING_PATTERNS)
 
+    if urgency:
+        signals.append("urgency_language")
+    if "account" in text_lower:
+        signals.append("account_threat")
+    if financial:
+        signals.append("payment_redirection")
     if phishing:
-        return True
+        signals.append("phishing_link")
 
-    if urgency and financial:
-        return True
+    scam_detected = phishing or (urgency and financial)
 
-    return False
+    if phishing and urgency and financial:
+        confidence = "high"
+    elif urgency and financial:
+        confidence = "medium"
+    else:
+        confidence = "low"
+
+    if "upi" in text_lower:
+        category = "UPI_FRAUD"
+    elif phishing:
+        category = "PHISHING"
+    elif "account" in text_lower:
+        category = "ACCOUNT_THREAT"
+    else:
+        category = "UNKNOWN"
+
+    return {
+        "scamDetected": scam_detected,
+        "confidence": confidence,
+        "scamCategory": category,
+        "detectionSignals": signals
+    }

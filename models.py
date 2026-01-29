@@ -1,10 +1,12 @@
 from pydantic import BaseModel
 from typing import List, Optional, Dict
 
+
 class Message(BaseModel):
     sender: str
     text: str
     timestamp: str
+
 
 class RequestModel(BaseModel):
     sessionId: str
@@ -12,14 +14,25 @@ class RequestModel(BaseModel):
     conversationHistory: List[Message] = []
     metadata: Optional[Dict] = {}
 
+
 class EngagementMetrics(BaseModel):
     engagementDurationSeconds: int
     totalMessagesExchanged: int
+
 
 class Intelligence(BaseModel):
     bankAccounts: List[str]
     upiIds: List[str]
     phishingLinks: List[str]
+
+
+class AgentExplanation(BaseModel):
+    confidence: str
+    scamCategory: str
+    detectionSignals: List[str]
+    recommendedAction: str
+    systemRationale: str
+
 
 class ResponseModel(BaseModel):
     status: str
@@ -27,3 +40,4 @@ class ResponseModel(BaseModel):
     engagementMetrics: EngagementMetrics
     extractedIntelligence: Intelligence
     agentNotes: str
+    agentExplanation: AgentExplanation
