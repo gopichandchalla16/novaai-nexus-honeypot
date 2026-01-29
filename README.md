@@ -1,36 +1,36 @@
 # 🛡️ NovaAI Nexus — Agentic Honeypot for Scam Detection & Intelligence Extraction
 
-NovaAI Nexus is a **production-ready Agentic AI Honeypot API** built for the  
+NovaAI Nexus is an **Agentic AI Honeypot API** developed for the  
 **India AI Impact Buildathon 2026 (HCL x GUVI)**.
 
-It detects scam messages, autonomously engages scammers using a safe and believable persona, and extracts actionable intelligence such as **UPI IDs, bank accounts, and phishing links**, while strictly following **Responsible AI principles**.
+The system detects scam messages, safely engages scammers using an autonomous agent, and extracts actionable intelligence such as **UPI IDs, bank accounts, and phishing links**, while strictly following **Responsible AI guidelines**.
 
 ---
 
 ## 🎯 Selected Problem Statement
 
-### **Problem 2: Agentic Honey-Pot for Scam Detection & Intelligence Extraction**
+### **Problem Statement 2: Agentic Honey-Pot for Scam Detection & Intelligence Extraction**
 
 Design an autonomous AI honeypot system that:
 
-- Detects scam messages  
-- Engages scammers autonomously after detection  
-- Maintains multi-turn conversations  
-- Extracts intelligence (UPI IDs, bank accounts, phishing URLs)  
-- Returns structured JSON responses  
-- Operates ethically without exposing detection  
+- Detects scam messages
+- Autonomously engages scammers after detection
+- Maintains multi-turn interaction
+- Extracts intelligence (UPI IDs, bank accounts, phishing links)
+- Returns structured JSON responses
+- Operates ethically without exposing detection logic
 
-**NovaAI Nexus is built exclusively for this problem statement.**
+**NovaAI Nexus is built specifically for this problem statement.**
 
 ---
 
-## ✨ Key Features
+## ✨ Core Features
 
-- 🔐 API Key–based authentication
+- 🔐 API key–based authentication
 - 🧠 Scam detection using **financial intent + urgency + phishing signals**
-- 🤖 Autonomous agentic engagement (no human intervention)
+- 🤖 Autonomous agentic engagement
 - 🔍 Intelligence extraction (UPI IDs, bank accounts, URLs)
-- 📊 Engagement metrics (time & message count)
+- 📊 Engagement metrics (duration & message count)
 - 🧾 Explainable detection rationale
 - 🔁 Mandatory GUVI callback integration
 - 🛡 Responsible & ethical AI compliance
@@ -40,20 +40,19 @@ Design an autonomous AI honeypot system that:
 
 ## 📂 Project Structure
 
-```
+
 novaai-nexus-honeypot/
-├── app.py              # Main FastAPI app
+├── app.py              # Main FastAPI application
 ├── detector.py         # Scam detection logic
 ├── agent.py            # Autonomous agent responses
 ├── extractor.py        # Intelligence extraction
 ├── callback.py         # GUVI callback handler
 ├── security.py         # API key authentication
 ├── sessions.py         # Session management
-├── models.py           # Request & Response schemas
-├── config.py           # Configuration file
-├── requirements.txt    # Python dependencies
+├── models.py           # Request & response schemas
+├── config.py           # Configuration
+├── requirements.txt    # Dependencies
 └── README.md           # Documentation
-```
 
 ---
 
@@ -71,12 +70,13 @@ https://novaai-nexus-honeypot.onrender.com/docs
 
 ## 🔐 Authentication
 
-All requests require an API key:
+All requests must include the API key:
+
 
 x-api-key: <YOUR_API_KEY>
 
 
-The API key is securely read from environment variables and validated on every request.
+The key is securely validated on every request.
 
 ---
 
@@ -102,7 +102,8 @@ The API key is securely read from environment variables and validated on every r
   }
 }
 
-✅ Response Schema (Evaluation-Ready)
+✅ JSON Response Schema
+
 {
   "status": "success",
   "scamDetected": true,
@@ -143,7 +144,7 @@ Low false positives
 
 High explainability
 
-Ethical detection
+Ethical detection behavior
 
 🤖 Agentic Engagement Behavior
 
@@ -157,14 +158,13 @@ Never requests sensitive information
 
 Uses neutral, believable language
 
-Safely prolongs conversation to extract intelligence
+Safely prolongs interaction to extract intelligence
 
 🔁 GUVI Callback Integration
 
-When engagement reaches threshold:
+When engagement reaches the defined threshold, the system sends a callback to:
 
 POST https://hackathon.guvi.in/api/updateHoneyPotFinalResult
-
 
 Callback payload includes:
 
