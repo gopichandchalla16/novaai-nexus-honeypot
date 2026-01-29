@@ -129,89 +129,79 @@ The key is securely validated on every request.
   }
 }
 
-🧠 Scam Detection Logic
+---
 
-A message is classified as a scam when:
+## Scam Detection Logic
 
-Urgency language AND financial intent are detected
-OR
+A message is classified as a scam if:
+- Urgency language and financial intent are detected, or
+- A phishing link is present
 
-A phishing link is present
+This approach prioritizes explainability and low false positives.
 
-This approach ensures:
+---
 
-Low false positives
-
-High explainability
-
-Ethical detection behavior
-
-🤖 Agentic Engagement Behavior
+## Agentic Engagement Behavior
 
 The autonomous agent:
+- Does not reveal detection
+- Does not confront or accuse
+- Does not request sensitive information
+- Uses neutral and believable language
+- Safely prolongs engagement to extract intelligence
 
-Never reveals scam detection
+---
 
-Never confronts or accuses
+## GUVI Callback Integration
 
-Never requests sensitive information
+When engagement reaches the defined threshold, a callback is sent to:
 
-Uses neutral, believable language
+https://hackathon.guvi.in/api/updateHoneyPotFinalResult
 
-Safely prolongs interaction to extract intelligence
+Callback data includes session ID, scam status, engagement metrics, extracted intelligence, and agent notes.
 
-🔁 GUVI Callback Integration
+Callback failures do not interrupt the main API.
 
-When engagement reaches the defined threshold, the system sends a callback to:
+---
 
-POST https://hackathon.guvi.in/api/updateHoneyPotFinalResult
+## Responsible AI Compliance
 
-Callback payload includes:
+- No impersonation
+- No entrapment
+- No hallucinated data
+- No exposure of detection logic
+- Deterministic and explainable outputs
 
-sessionId
+---
 
-scamDetected
+## Hackathon Alignment
 
-totalMessagesExchanged
+Event: India AI Impact Buildathon 2026  
+Organizer: HCL x GUVI  
+Problem Statement: Agentic Honeypot for Scam Detection  
 
-extractedIntelligence
+Designed for large-scale fraud prevention in India.
 
-agentNotes
+---
 
-Callback failures never interrupt the main API.
+## Deployment Readiness
 
-🛡 Responsible AI Compliance
+- Public HTTPS endpoint
+- Stable response schema
+- Secure authentication
+- Low latency
+- Always-on compatible
+- Evaluation-safe
 
-✔ No impersonation
-✔ No entrapment
-✔ No hallucinated data
-✔ No exposure of detection logic
-✔ Deterministic & explainable outputs
+---
 
-🏆 Hackathon Alignment
+## Team
 
-India AI Impact Buildathon 2026
-
-Organized by HCL x GUVI
-
-Problem Statement 2: Agentic Honeypot
-
-Designed for large-scale fraud prevention in India
-
-🚀 Deployment Readiness
-
-✔ Public HTTPS endpoint
-✔ Stable response schema
-✔ Secure authentication
-✔ Low latency
-✔ Always-on compatible
-✔ Evaluation-safe
-
-👥 Team
-
-Team Name: NovaAI Nexus
+Team Name: NovaAI Nexus  
 Event: India AI Impact Buildathon 2026
 
-📄 License
+---
+
+## License
 
 This project is developed strictly for hackathon and educational purposes under the India AI Impact Buildathon 2026.
