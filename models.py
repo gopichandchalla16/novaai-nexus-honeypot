@@ -1,17 +1,25 @@
 from pydantic import BaseModel
 from typing import List, Optional, Dict
+from datetime import datetime
 
 
 class Message(BaseModel):
     sender: str
-    text: str
-    timestamp: str
+    text: Optional[str] = ""
+    timestamp: Optional[str] = None
+
+    def normalize(self):
+        return {
+            "sender": self.sender,
+            "text": self.text or "",
+            "timestamp": self.timestamp or datetime.utcnow().isoformat()
+        }
 
 
 class RequestModel(BaseModel):
     sessionId: str
     message: Message
-    conversationHistory: List[Message] = []
+    conversationHistory: Optional[List[Message]] = []
     metadata: Optional[Dict] = {}
 
 
