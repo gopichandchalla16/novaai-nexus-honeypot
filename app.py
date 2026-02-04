@@ -12,81 +12,107 @@ from callback import send_callback
 app = FastAPI(title="NovaAI Nexus Honeypot API")
 
 
-def safe_reply(text: str = None) -> JSONResponse:
+def safe_success(reply: str):
     """
-    GUARANTEED GUVI-SAFE RESPONSE
+    GUARANTEED JSON response for GUVI
     """
     return JSONResponse(
         status_code=200,
         content={
             "status": "success",
-            "reply": text or "Sorry, I’m a bit confused. Can you explain what happened?"
+            "reply": reply
         }
     )
 
 
 @app.post("/honeypot")
-async def honeypot_endpoint(
-    request: Request,
-    api_key: str = Depends(verify_api_key)
-):
-    # 1️⃣ Read raw body FIRST (never trust JSON)
+async def honeypot_endpoint(request: Request, api_key: str = Depends(verify_api_key)):
+    # ------------------------------------------------------------------
+    # STEP 1: Read RAW body (NEVER trust request.json() for GUVI)
+    # ------------------------------------------------------------------
     try:
         raw_body = await request.body()
     except Exception:
-        return safe_reply()
+        return safe_success(
+            "Sorry, I didn’t catch that. Could you explain what’s happening?"
+        )
 
-    # 2️⃣ Try parsing JSON safely
-    body = {}
-    if raw_body:
-        try:
-            body = json.loads(raw_body.decode("utf-8"))
-        except Exception:
-            # GUVI probe / malformed input
-            return safe_reply()
+    if not raw_body:
+        return safe_success(
+            "Hi, I’m here to help. Can you tell me what message you received?"
+        )
 
-    # 3️⃣ Extract fields defensively
-    session_id = body.get("sessionId", "unknown-session")
+    # ------------------------------------------------------------------
+    # STEP 2: Manual JSON parsing (bulletproof)
+    # ------------------------------------------------------------------
+    try:
+        body = json.loads(raw_body.decode("utf-8"))
+    except Exception:
+        return safe_success(
+            "That message looks unclear. Can you resend the details?"
+        )
+
+    # ------------------------------------------------------------------
+    # STEP 3: Safe field extraction (NO assumptions)
+    # ------------------------------------------------------------------
+    session_id = str(body.get("sessionId", "unknown-session"))
+
     message = body.get("message") or {}
-    text = message.get("text") or ""
+    if not isinstance(message, dict):
+        message = {}
 
-    # 4️⃣ Session handling
+    text = message.get("text", "")
+    if not isinstance(text, str):
+        text = ""
+
+    # ------------------------------------------------------------------
+    # STEP 4: Session handling
+    # ------------------------------------------------------------------
     session = get_session(session_id)
+
     if text:
         session["messages"].append(text)
 
-    # 5️⃣ Scam detection (safe default)
-    detection = {
-        "scamDetected": False,
-        "confidence": "low",
-        "scamCategory": "UNKNOWN",
-        "detectionSignals": []
-    }
-
-    if text.strip():
+    # ------------------------------------------------------------------
+    # STEP 5: Scam detection (safe defaults)
+    # ------------------------------------------------------------------
+    if text:
         detection = detect_scam(text)
+    else:
+        detection = {
+            "scamDetected": False,
+            "confidence": "low",
+            "scamCategory": "UNKNOWN",
+            "detectionSignals": []
+        }
 
-    session["detected"] = session["detected"] or detection["scamDetected"]
+    session["detected"] = session["detected"] or detection.get("scamDetected", False)
 
-    # 6️⃣ Intelligence extraction (safe default)
-    extracted = {
-        "bankAccounts": [],
-        "upiIds": [],
-        "phishingLinks": [],
-        "phoneNumbers": [],
-        "suspiciousKeywords": []
-    }
-
-    if text.strip():
+    # ------------------------------------------------------------------
+    # STEP 6: Intelligence extraction (safe)
+    # ------------------------------------------------------------------
+    if text:
         extracted = extract_intelligence(text)
+    else:
+        extracted = {
+            "bankAccounts": [],
+            "upiIds": [],
+            "phishingLinks": [],
+            "phoneNumbers": [],
+            "suspiciousKeywords": []
+        }
 
-    # 7️⃣ Engagement-optimized reply (GUVI scoring lives here)
+    # ------------------------------------------------------------------
+    # STEP 7: Engagement-maximizing reply (GUVI SCORES THIS)
+    # ------------------------------------------------------------------
     reply = agent_reply(
-        detection["scamDetected"],
-        detection["confidence"]
+        detection.get("scamDetected", False),
+        detection.get("confidence", "low")
     )
 
-    # 8️⃣ Mandatory callback (SILENT, NEVER BLOCK RESPONSE)
+    # ------------------------------------------------------------------
+    # STEP 8: Callback (MANDATORY but SILENT)
+    # ------------------------------------------------------------------
     try:
         if (
             session["detected"]
@@ -101,11 +127,14 @@ async def honeypot_endpoint(
                 "scamDetected": True,
                 "totalMessagesExchanged": len(session["messages"]),
                 "extractedIntelligence": extracted,
-                "agentNotes": "Scammer used urgency and credential-harvesting tactics"
+                "agentNotes": "Urgency-based social engineering detected"
             })
             session["callback_sent"] = True
     except Exception:
-        pass  # NEVER break honeypot response
+        # Callback must NEVER break main response
+        pass
 
-    # 9️⃣ GUARANTEED GUVI FORMAT
-    return safe_reply(reply)
+    # ------------------------------------------------------------------
+    # STEP 9: ONLY response GUVI expects
+    # ------------------------------------------------------------------
+    return safe_success(reply)
