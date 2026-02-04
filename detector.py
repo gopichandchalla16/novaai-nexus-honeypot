@@ -11,11 +11,9 @@ FINANCIAL_WORDS = [
     "upi", "account", "bank", "refund"
 ]
 
-PHISHING_PATTERNS = [
+LINK_PATTERNS = [
     r"http[s]?://",
-    r"www\.",
-    r"\.com",
-    r"\.in"
+    r"www\."
 ]
 
 
@@ -23,22 +21,22 @@ def detect_scam(text: str) -> Dict:
     text_lower = text.lower()
     signals: List[str] = []
 
-    urgency = any(w in text_lower for w in URGENCY_WORDS)
-    financial = any(w in text_lower for w in FINANCIAL_WORDS)
-    phishing = any(re.search(p, text_lower) for p in PHISHING_PATTERNS)
+    urgency = any(word in text_lower for word in URGENCY_WORDS)
+    financial = any(word in text_lower for word in FINANCIAL_WORDS)
+    link_present = any(re.search(p, text_lower) for p in LINK_PATTERNS)
 
     if urgency:
         signals.append("urgency_language")
     if "account" in text_lower:
         signals.append("account_threat")
     if financial:
-        signals.append("payment_redirection")
-    if phishing:
-        signals.append("phishing_link")
+        signals.append("financial_context")
+    if link_present:
+        signals.append("external_link")
 
-    scam_detected = phishing or (urgency and financial)
+    scam_detected = urgency and (financial or link_present)
 
-    if phishing and urgency and financial:
+    if urgency and financial and link_present:
         confidence = "high"
     elif urgency and financial:
         confidence = "medium"
@@ -47,12 +45,12 @@ def detect_scam(text: str) -> Dict:
 
     if "upi" in text_lower:
         category = "UPI_FRAUD"
-    elif phishing:
+    elif link_present:
         category = "PHISHING"
     elif "account" in text_lower:
         category = "ACCOUNT_THREAT"
     else:
-        category = "UNKNOWN"
+        category = "SOCIAL_ENGINEERING"
 
     return {
         "scamDetected": scam_detected,

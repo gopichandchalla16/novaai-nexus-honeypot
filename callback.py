@@ -7,6 +7,10 @@ HEADERS = {
 }
 
 def send_callback(payload: dict):
+    """
+    Sends intelligence to GUVI.
+    Must NEVER block or affect honeypot response.
+    """
     try:
         requests.post(
             GUVI_CALLBACK_URL,
@@ -15,4 +19,5 @@ def send_callback(payload: dict):
             timeout=5
         )
     except Exception:
+        # Silence is intentional (GUVI requirement)
         pass
