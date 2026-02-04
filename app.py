@@ -11,11 +11,10 @@ from callback import send_callback
 
 app = FastAPI(title="NovaAI Nexus Honeypot API")
 
-
+# -------------------------------------------------
+# ALWAYS return JSON (GUVI rule)
+# -------------------------------------------------
 def safe_success(reply: str):
-    """
-    GUARANTEED JSON response for GUVI
-    """
     return JSONResponse(
         status_code=200,
         content={
@@ -24,27 +23,32 @@ def safe_success(reply: str):
         }
     )
 
+# -------------------------------------------------
+# HANDLE ALL METHODS (POST / GET / OPTIONS / HEAD)
+# -------------------------------------------------
+@app.api_route("/honeypot", methods=["POST", "GET", "OPTIONS", "HEAD"])
+async def honeypot(request: Request, api_key: str = Depends(verify_api_key)):
 
-@app.post("/honeypot")
-async def honeypot_endpoint(request: Request, api_key: str = Depends(verify_api_key)):
-    # ------------------------------------------------------------------
-    # STEP 1: Read RAW body (NEVER trust request.json() for GUVI)
-    # ------------------------------------------------------------------
-    try:
-        raw_body = await request.body()
-    except Exception:
-        return safe_success(
-            "Sorry, I didn’t catch that. Could you explain what’s happening?"
-        )
-
-    if not raw_body:
+    # ---- Non-POST requests (GUVI preflight, health, probing)
+    if request.method != "POST":
         return safe_success(
             "Hi, I’m here to help. Can you tell me what message you received?"
         )
 
-    # ------------------------------------------------------------------
-    # STEP 2: Manual JSON parsing (bulletproof)
-    # ------------------------------------------------------------------
+    # ---- Read raw body safely
+    try:
+        raw_body = await request.body()
+    except Exception:
+        return safe_success(
+            "I couldn’t read the message clearly. Can you explain what happened?"
+        )
+
+    if not raw_body:
+        return safe_success(
+            "Hi, I’m here to help. What message did you receive?"
+        )
+
+    # ---- Parse JSON manually (NO request.json())
     try:
         body = json.loads(raw_body.decode("utf-8"))
     except Exception:
@@ -52,12 +56,10 @@ async def honeypot_endpoint(request: Request, api_key: str = Depends(verify_api_
             "That message looks unclear. Can you resend the details?"
         )
 
-    # ------------------------------------------------------------------
-    # STEP 3: Safe field extraction (NO assumptions)
-    # ------------------------------------------------------------------
+    # ---- Extract fields defensively
     session_id = str(body.get("sessionId", "unknown-session"))
 
-    message = body.get("message") or {}
+    message = body.get("message", {})
     if not isinstance(message, dict):
         message = {}
 
@@ -65,62 +67,37 @@ async def honeypot_endpoint(request: Request, api_key: str = Depends(verify_api_
     if not isinstance(text, str):
         text = ""
 
-    # ------------------------------------------------------------------
-    # STEP 4: Session handling
-    # ------------------------------------------------------------------
+    # ---- Session
     session = get_session(session_id)
-
     if text:
         session["messages"].append(text)
 
-    # ------------------------------------------------------------------
-    # STEP 5: Scam detection (safe defaults)
-    # ------------------------------------------------------------------
+    # ---- Detection
     if text:
         detection = detect_scam(text)
     else:
         detection = {
             "scamDetected": False,
-            "confidence": "low",
-            "scamCategory": "UNKNOWN",
-            "detectionSignals": []
+            "confidence": "low"
         }
 
     session["detected"] = session["detected"] or detection.get("scamDetected", False)
 
-    # ------------------------------------------------------------------
-    # STEP 6: Intelligence extraction (safe)
-    # ------------------------------------------------------------------
-    if text:
-        extracted = extract_intelligence(text)
-    else:
-        extracted = {
-            "bankAccounts": [],
-            "upiIds": [],
-            "phishingLinks": [],
-            "phoneNumbers": [],
-            "suspiciousKeywords": []
-        }
+    # ---- Extraction
+    extracted = extract_intelligence(text) if text else {}
 
-    # ------------------------------------------------------------------
-    # STEP 7: Engagement-maximizing reply (GUVI SCORES THIS)
-    # ------------------------------------------------------------------
+    # ---- Engagement reply (scored by GUVI)
     reply = agent_reply(
         detection.get("scamDetected", False),
         detection.get("confidence", "low")
     )
 
-    # ------------------------------------------------------------------
-    # STEP 8: Callback (MANDATORY but SILENT)
-    # ------------------------------------------------------------------
+    # ---- Callback (silent, never break response)
     try:
         if (
             session["detected"]
             and not session["callback_sent"]
-            and (
-                any(extracted.values())
-                or len(session["messages"]) >= 3
-            )
+            and (extracted or len(session["messages"]) >= 3)
         ):
             send_callback({
                 "sessionId": session_id,
@@ -131,10 +108,14 @@ async def honeypot_endpoint(request: Request, api_key: str = Depends(verify_api_
             })
             session["callback_sent"] = True
     except Exception:
-        # Callback must NEVER break main response
         pass
 
-    # ------------------------------------------------------------------
-    # STEP 9: ONLY response GUVI expects
-    # ------------------------------------------------------------------
+    # ---- FINAL RESPONSE (ONLY THIS)
     return safe_success(reply)
+
+# -------------------------------------------------
+# Root health (GUVI sometimes checks this)
+# -------------------------------------------------
+@app.get("/")
+async def root():
+    return safe_success("Honeypot API is running.")
