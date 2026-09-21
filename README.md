@@ -1,3 +1,37 @@
+<div align="center">
+
+# 🛡️ NovaAI Nexus
+
+### Agentic AI Honeypot for Scam Detection
+
+**India AI Impact Buildathon 2026 · HCL × GUVI**
+
+[![API](https://img.shields.io/badge/API-Live-2EA043?style=for-the-badge)](https://novaai-nexus-honeypot.onrender.com/docs)
+[![Python](https://img.shields.io/badge/Python-FastAPI-009688?style=for-the-badge)](https://fastapi.tiangolo.com/)
+[![AI](https://img.shields.io/badge/Agentic_AI-Scam_Intelligence-7C3AED?style=for-the-badge)](https://github.com/gopichandchalla16/novaai-nexus-honeypot)
+
+</div>
+
+## 👀 Recruiter Snapshot
+
+NovaAI Nexus is an **agentic AI security system** designed to detect scam messages, engage safely after detection and extract structured intelligence such as UPI IDs, bank accounts and phishing URLs.
+
+### What This Demonstrates
+
+- Agentic AI workflow design
+- Scam/phishing signal detection
+- Multi-turn session handling
+- Structured API design with FastAPI
+- Intelligence extraction
+- API-key authentication
+- Responsible AI constraints
+- Public deployment and Swagger documentation
+
+**Live API:** https://novaai-nexus-honeypot.onrender.com/honeypot  
+**Swagger:** https://novaai-nexus-honeypot.onrender.com/docs
+
+---
+
 # 🛡️ NovaAI Nexus — Agentic Honeypot for Scam Detection & Intelligence Extraction
 
 NovaAI Nexus is an **Agentic AI Honeypot API** developed for the  
